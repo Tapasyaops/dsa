@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+struct Node* newNode(int val) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = val;
+    node->left = node->right = NULL;
+    return node;
+}
+
+bool isMirror(struct Node* left, struct Node* right) {
+    if (left == NULL && right == NULL)
+        return true;
+    if (left == NULL || right == NULL)
+        return false;
+    if (left->data != right->data)
+        return false;
+
+    return isMirror(left->left, right->right) &&
+           isMirror(left->right, right->left);
+}
+
+bool isSymmetric(struct Node* root) {
+    if (root == NULL)
+        return true;
+    return isMirror(root->left, root->right);
+}
