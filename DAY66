@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100
+
+int V; // number of vertices
+int adj[MAX][MAX]; // adjacency matrix
+
+bool dfs(int node, bool visited[], bool recStack[]) {
+    // mark current node as visited and part of recursion stack
+    visited[node] = true;
+    recStack[node] = true;
+
+    for (int i = 0; i < V; i++) {
+        if (adj[node][i]) { // edge exists
+            // if not visited, recurse
+            if (!visited[i]) {
+                if (dfs(i, visited, recStack))
+                    return true;
+            }
+            // if already in recursion stack → cycle
+            else if (recStack[i]) {
+                return true;
+            }
+        }
+    }
+
+    // remove node from recursion stack before returning
+    recStack[node] = false;
+    return false;
+}
+
+bool hasCycle() {
+    bool visited[MAX] = {false};
+    bool recStack[MAX] = {false};
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            if (dfs(i, visited, recStack))
+                return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    V = 4;
+
+    // initialize adjacency matrix
+    for (int i = 0; i < V; i++)
+        for (int j = 0; j < V; j++)
+            adj[i][j] = 0;
+
+    // Example graph:
+    // 0 → 1 → 2 → 0 (cycle)
+    // 2 → 3
+    adj[0][1] = 1;
+    adj[1][2] = 1;
+    adj[2][0] = 1;
+    adj[2][3] = 1;
+
+    if (hasCycle())
+        printf("YES\n");
+    else
+        printf("NO\n");
+
+    return 0;
+}
