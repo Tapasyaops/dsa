@@ -1,0 +1,49 @@
+#include <stdio.h>
+
+#define MAX 1000
+
+// Simple hashmap using arrays (since constraints are not given)
+int longestZeroSumSubarray(int arr[], int n) {
+    int prefixSum = 0;
+    int maxLen = 0;
+
+    // Hashmap: sum -> first index
+    int hash[2 * MAX] = {0};
+    int index[2 * MAX];
+
+    for (int i = 0; i < 2 * MAX; i++) {
+        index[i] = -2; // mark as not visited
+    }
+
+    // To handle sum = 0 case
+    index[MAX] = -1;
+
+    for (int i = 0; i < n; i++) {
+        prefixSum += arr[i];
+
+        int key = prefixSum + MAX;
+
+        if (index[key] == -2) {
+            // first time seen
+            index[key] = i;
+        } else {
+            // seen before → subarray sum = 0
+            int len = i - index[key];
+            if (len > maxLen) {
+                maxLen = len;
+            }
+        }
+    }
+
+    return maxLen;
+}
+
+int main() {
+    int arr[] = {15, -2, 2, -8, 1, 7, 10, 23};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    int result = longestZeroSumSubarray(arr, n);
+    printf("%d\n", result);
+
+    return 0;
+}
